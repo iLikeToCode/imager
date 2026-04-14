@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "imager/gen/internal/pb;pb";
+
+import "google/protobuf/empty.proto";
+
+service ImageService {
+  rpc ListImages (google.protobuf.Empty) returns (ListImagesResponse);
+  rpc PullImage (PullImageRequest) returns (stream ImageChunk);
+}
+
+message ListImagesResponse {
+  repeated Image images = 1;
+}
+
+message Image {
+  int32 id = 1;
+  string name = 2;
+  int64 size = 3;
+}
+
+message PullImageRequest {
+  int32 id = 1;
+}
+
+message ImageChunk {
+  bytes data = 1;
+}
