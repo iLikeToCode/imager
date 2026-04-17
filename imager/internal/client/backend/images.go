@@ -11,25 +11,22 @@ import (
 	pb "imager/gen/pb"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func ListImages() {}
-
-func PullImage() {
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+func NewImageClient(addr string, opts grpc.DialOption) (pb.ImageServiceClient, *grpc.ClientConn) {
+	conn, err := grpc.NewClient(addr, opts)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
-	defer conn.Close()
 
-	client := pb.NewImageServiceClient(conn)
+	return pb.NewImageServiceClient(conn), conn
+}
 
+func ListImages(client pb.ImageServiceClient) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// ---- List images ----
 	resp, err := client.ListImages(ctx, &emptypb.Empty{})
 	if err != nil {
 		log.Fatalf("ListImages failed: %v", err)
@@ -39,17 +36,14 @@ func PullImage() {
 	for _, img := range resp.Images {
 		fmt.Printf("ID: %d | %s | %d bytes\n", img.Id, img.Name, img.Size)
 	}
+}
 
-	// ---- Pull first image (example) ----
-	if len(resp.Images) == 0 {
-		log.Println("no images available")
-		return
-	}
+func PullImage(client pb.ImageServiceClient, id int32) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	imageID := resp.Images[0].Id
-
-	stream, err := client.PullImage(context.Background(), &pb.PullImageRequest{
-		Id: imageID,
+	stream, err := client.PullImage(ctx, &pb.PullImageRequest{
+		Id: id,
 	})
 	if err != nil {
 		log.Fatalf("PullImage failed: %v", err)

@@ -16,9 +16,9 @@ message ListImagesResponse {
 }
 
 message Image {
-  int32 id = 1;
+  uint32 id = 1;
   string name = 2;
-  int64 size = 3;
+  uint64 size = 3;
 }
 
 message PullImageRequest {
