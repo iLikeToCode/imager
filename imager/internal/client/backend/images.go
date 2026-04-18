@@ -1,4 +1,4 @@
-package grpc
+package backend
 
 import (
 	"context"

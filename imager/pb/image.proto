@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 
-option go_package = "imager/gen/internal/pb;pb";
+option go_package = "gen/pb";
 
 import "google/protobuf/empty.proto";
 

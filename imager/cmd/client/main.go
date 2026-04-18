@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	client, conn := backend.NewImageClient("127.0.0.1:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	client, conn := backend.NewClient("127.0.0.1:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer conn.Close()
 
 	backend.ListImages(client)
