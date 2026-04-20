@@ -1,17 +1,24 @@
 package backend
 
 import (
-	pb "imager/gen/pb"
 	"log"
 
 	"google.golang.org/grpc"
 )
 
-func NewClient(addr string, opts grpc.DialOption) (pb.ImageServiceClient, *grpc.ClientConn) {
+type Client struct {
+	Conn   *grpc.ClientConn
+	Images *ImageClient
+}
+
+func NewClient(addr string, opts grpc.DialOption) Client {
 	conn, err := grpc.NewClient(addr, opts)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
 
-	return pb.NewImageServiceClient(conn), conn
+	return Client{
+		Conn:   conn,
+		Images: newImageClient(conn),
+	}
 }

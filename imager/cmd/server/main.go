@@ -50,9 +50,9 @@ func NewServer() *Server {
 		}
 
 		img := &pb.Image{
-			Id:   int32(len(images) + 1), // simple sequential ID
+			Id:   uint32(len(images) + 1), // simple sequential ID
 			Name: name,
-			Size: info.Size(),
+			Size: uint64(info.Size()),
 		}
 
 		log.Printf("Loaded image: %s size=%d", name, img.Size)
@@ -75,7 +75,7 @@ func getImagePath(name string) (string, error) {
 	return path.Join(IMAGE_PATH, name), nil
 }
 
-func (s *Server) getImageName(id int32) (string, error) {
+func (s *Server) getImageName(id uint32) (string, error) {
 	for _, img := range s.images {
 		if img.Id == id {
 			return "./" + img.Name, nil

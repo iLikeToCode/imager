@@ -22,7 +22,7 @@ message Image {
 }
 
 message PullImageRequest {
-  int32 id = 1;
+  uint32 id = 1;
 }
 
 message ImageChunk {

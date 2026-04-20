@@ -128,7 +128,7 @@ func (x *Image) GetSize() uint64 {
 
 type PullImageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -163,7 +163,7 @@ func (*PullImageRequest) Descriptor() ([]byte, []int) {
 	return file_pb_image_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *PullImageRequest) GetId() int32 {
+func (x *PullImageRequest) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
@@ -226,7 +226,7 @@ const file_pb_image_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
 	"\x04size\x18\x03 \x01(\x04R\x04size\"\"\n" +
 	"\x10PullImageRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\" \n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\" \n" +
 	"\n" +
 	"ImageChunk\x12\x12\n" +
 	"\x04data\x18\x01 \x01(\fR\x04data2\x81\x01\n" +

@@ -14,31 +14,30 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func NewImageClient(addr string, opts grpc.DialOption) (pb.ImageServiceClient, *grpc.ClientConn) {
-	conn, err := grpc.NewClient(addr, opts)
-	if err != nil {
-		log.Fatalf("failed to connect: %v", err)
-	}
-
-	return pb.NewImageServiceClient(conn), conn
+type ImageClient struct {
+	client pb.ImageServiceClient
 }
 
-func ListImages(client pb.ImageServiceClient) {
+func newImageClient(conn *grpc.ClientConn) *ImageClient {
+	return &ImageClient{
+		client: pb.NewImageServiceClient(conn),
+	}
+}
+
+func (c *ImageClient) ListImages() ([]*pb.Image, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	resp, err := client.ListImages(ctx, &emptypb.Empty{})
+	resp, err := c.client.ListImages(ctx, &emptypb.Empty{})
+
 	if err != nil {
-		log.Fatalf("ListImages failed: %v", err)
+		return nil, err
 	}
 
-	fmt.Println("Available images:")
-	for _, img := range resp.Images {
-		fmt.Printf("ID: %d | %s | %d bytes\n", img.Id, img.Name, img.Size)
-	}
+	return resp.Images, nil
 }
 
-func PullImage(client pb.ImageServiceClient, id int32) {
+func PullImage(client pb.ImageServiceClient, id uint32) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
