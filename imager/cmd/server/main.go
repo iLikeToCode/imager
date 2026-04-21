@@ -65,6 +65,10 @@ func NewServer() *Server {
 	}
 }
 
+func (s *Server) Alive(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
+
 func (s *Server) ListImages(ctx context.Context, req *emptypb.Empty) (*pb.ListImagesResponse, error) {
 	return &pb.ListImagesResponse{
 		Images: s.images,
@@ -128,7 +132,9 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterImageServiceServer(grpcServer, NewServer())
+	server := NewServer()
+	pb.RegisterImageServiceServer(grpcServer, server)
+	pb.RegisterAliveServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
 	log.Println("Server is running on port 50051...")

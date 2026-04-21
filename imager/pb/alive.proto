@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "gen/pb";
+
+import "google/protobuf/empty.proto";
+
+service Alive {
+  rpc Alive (google.protobuf.Empty) returns (google.protobuf.Empty);
+}

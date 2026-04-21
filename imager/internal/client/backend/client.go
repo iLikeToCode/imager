@@ -9,16 +9,18 @@ import (
 type Client struct {
 	Conn   *grpc.ClientConn
 	Images *ImageClient
+	Alive  *AliveClient
 }
 
-func NewClient(addr string, opts grpc.DialOption) Client {
+func NewClient(addr string, opts grpc.DialOption) *Client {
 	conn, err := grpc.NewClient(addr, opts)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
 
-	return Client{
+	return &Client{
 		Conn:   conn,
 		Images: newImageClient(conn),
+		Alive:  newAliveClient(conn),
 	}
 }

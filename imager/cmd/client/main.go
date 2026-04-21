@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	backend "imager/internal/client/backend"
+	"imager/internal/client/tui"
 	"log"
-	"os"
-	"os/exec"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -27,7 +25,7 @@ func main() {
 		client := backend.NewClient(fmt.Sprintf("%s:%s", ip, port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 		defer client.Conn.Close()
 
-		images, _err := client.Images.ListImages()
+		_err := client.Alive.Alive()
 
 		if _err != nil {
 			log.Println(_err)
@@ -42,17 +40,12 @@ func main() {
 			continue
 		}
 
-		fmt.Println("Available images:")
-		for _, img := range images {
-			fmt.Printf("ID: %d | %s | %d bytes\n", img.Id, img.Name, img.Size)
-		}
+		tui.RunTui(client)
 
 		break
 	}
 
-	//tui.RunTui()
-
-	fmt.Println("Press ENTER to shutdown...")
-	bufio.NewReader(os.Stdin).ReadBytes('\n')
-	exec.Command("shutdown", "now").Run()
+	//fmt.Println("Press ENTER to shutdown...")
+	//bufio.NewReader(os.Stdin).ReadBytes('\n')
+	//exec.Command("shutdown", "now").Run()
 }
